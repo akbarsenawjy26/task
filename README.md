@@ -19,22 +19,13 @@ Proyek ini menggunakan pendekatan Service-Oriented Architecture (SOA) dengan str
 │   └── api
 │       └── routes/
 ├── common/
-│   ├── constants/
-│   ├── echohttp/
 │   ├── helper/
-│   └── httpservice/
 ├── src/
-│   ├── repository/
-│   └── task/
-│       ├── application/
-│       ├── controller/
-│       └── service/
-└── toolkit/
-    ├── config/
-    ├── db/
-    ├── log/
-    └── runtimekit/
-
+   ├── repository/
+   └── task/
+       ├── application/
+       ├── controller/
+       └── service/
 ```
 ## Prasyarat
 - Go: v1.20 atau lebih baru

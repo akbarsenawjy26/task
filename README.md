@@ -29,9 +29,9 @@ Proyek ini menggunakan pendekatan Service-Oriented Architecture (SOA) dengan str
 ```
 ## Prasyarat
 - Go: v1.20 atau lebih baru
-- PostgreSQL: Database yang digunakan untuk menyimpan data task
-- SQLC: Digunakan untuk generate query repository
-- Echo: Web framework untuk Go
+- PostgreSQL
+- SQLC
+- Framework : Echo
 
 ### Cek Spesifikasi API untuk detail
 #### @Akbarsenawjy-24

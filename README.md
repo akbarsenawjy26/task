@@ -33,5 +33,5 @@ Proyek ini menggunakan pendekatan Service-Oriented Architecture (SOA) dengan str
 - SQLC
 - Framework : Echo
 
-### Cek Spesifikasi API untuk detail
+#### Cek Spesifikasi API untuk detail
 #### @Akbarsenawjy-24

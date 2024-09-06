@@ -1,9 +1,11 @@
 package controller
 
 import (
+	"database/sql"
 	"github.com/labstack/echo/v4"
-	"task/common/httpservice"
-	"task/common/utility"
+	"net/http"
+	"strconv"
+	"task/common/helper"
 	"task/src/repository"
 	"task/src/task/application"
 )
@@ -19,38 +21,93 @@ func NewTaskControllerImpl(taskService application.TaskService) TaskController {
 }
 
 func (controller *TaskControllerImpl) Create(ecx echo.Context) error {
-	var req repository.CreateTaskParams
-	if err := ecx.Bind(&req); err != nil {
-		return httpservice.ResponseData(ecx, nil, httpservice.ErrBadRequest)
-	}
-	if err := utility.ValidateStruct(ecx.Request().Context(), req); err != nil {
-		return httpservice.ResponseData(ecx, nil, httpservice.ErrBadRequest)
-	}
+	req := new(CreateTaskRequest)
 
-	task, err := controller.taskService.Create(ecx.Request().Context(), req)
+	err := ecx.Bind(&req)
 	if err != nil {
-		return httpservice.ResponseData(ecx, nil, httpservice.ErrInternalServerError)
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
-
-	return httpservice.ResponseData(ecx, task, nil)
+	task := repository.CreateTaskParams{
+		Description: req.Description,
+		Status:      sql.NullString{String: *req.Status, Valid: true},
+	}
+	createTask, err := controller.taskService.Create(ecx.Request().Context(), task)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	}
+	createTaskResponse := helper.Response{
+		Code:    http.StatusOK,
+		Message: "OK",
+		Data:    createTask,
+	}
+	return ecx.JSON(http.StatusCreated, createTaskResponse)
 }
 
 func (controller *TaskControllerImpl) Update(ecx echo.Context) error {
-	//TODO implement me
-	panic("implement me")
+	id := ecx.Param("id")
+	req := new(UpdateTaskRequest)
+	sId, _ := strconv.Atoi(id)
+
+	err := ecx.Bind(&req)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	}
+	task := repository.UpdateTaskParams{
+		Description: req.Description,
+		Status:      sql.NullString{String: *req.Status, Valid: true},
+		ID:          int32(sId),
+	}
+	updateTask, err := controller.taskService.Update(ecx.Request().Context(), task)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	}
+	updateTaskResponse := helper.Response{
+		Code:    http.StatusOK,
+		Message: "OK",
+		Data:    updateTask,
+	}
+	return ecx.JSON(http.StatusOK, updateTaskResponse)
 }
 
 func (controller *TaskControllerImpl) Delete(ecx echo.Context) error {
-	//TODO implement me
-	panic("implement me")
+	id := ecx.Param("id")
+	sId, _ := strconv.Atoi(id)
+
+	err := controller.taskService.Delete(ecx.Request().Context(), int32(sId))
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	}
+	deleteTaskResponse := helper.Response{
+		Code:    http.StatusOK,
+		Message: "Success Delete Task",
+	}
+	return ecx.JSON(http.StatusOK, deleteTaskResponse)
 }
 
 func (controller *TaskControllerImpl) List(ecx echo.Context) error {
-	//TODO implement me
-	panic("implement me")
+	listTask, err := controller.taskService.List(ecx.Request().Context())
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	}
+	listTaskResponse := helper.Response{
+		Code:    http.StatusOK,
+		Message: "OK",
+		Data:    listTask,
+	}
+	return ecx.JSON(http.StatusOK, listTaskResponse)
 }
 
 func (controller *TaskControllerImpl) ListByStatus(ecx echo.Context) error {
-	//TODO implement me
-	panic("implement me")
+	status := ecx.Param("status")
+	newStatus := sql.NullString{String: status, Valid: true}
+	listTaskByStatus, err := controller.taskService.ListByStatus(ecx.Request().Context(), newStatus)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	}
+	responseListByStatus := helper.Response{
+		Code:    http.StatusOK,
+		Message: "OK",
+		Data:    listTaskByStatus,
+	}
+	return ecx.JSON(http.StatusOK, responseListByStatus)
 }

@@ -6,6 +6,7 @@ package repository
 
 import (
 	"database/sql"
+	"time"
 )
 
 type Task struct {
@@ -14,4 +15,13 @@ type Task struct {
 	Status      sql.NullString `json:"status"`
 	CreatedAt   sql.NullTime   `json:"created_at"`
 	UpdatedAt   sql.NullTime   `json:"updated_at"`
+}
+
+type User struct {
+	GUID      int32     `json:"GUID"`
+	Email     string    `json:"email"`
+	Username  string    `json:"username"`
+	Password  string    `json:"password"`
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
 }

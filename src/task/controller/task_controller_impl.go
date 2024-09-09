@@ -36,7 +36,7 @@ func (controller *TaskControllerImpl) Create(ecx echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 	createTaskResponse := helper.Response{
-		Code:    http.StatusOK,
+		Code:    http.StatusCreated,
 		Message: "OK",
 		Data:    createTask,
 	}
